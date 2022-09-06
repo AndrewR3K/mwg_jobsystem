@@ -1,6 +1,7 @@
 local Key = Config.Key
 local Inmenu
 local VORPcore = {}
+local OnDuty = false
 
 -- Get Menu
 TriggerEvent("menuapi:getData", function(call)
@@ -15,7 +16,7 @@ Citizen.CreateThread(function()
     while true do
         local player = PlayerPedId()
         local isDead = IsPedDeadOrDying(player)
-        if IsControlJustPressed(0, Key) and not isDead and not Inmenu then
+        if IsControlJustPressed(0, Key) and not isDead and not Inmenu and not OnDuty then
             MenuData.CloseAll()
             TriggerServerEvent("mwg_jobsystem:getJobs", "jobsystem.openjobmenu")
         end
@@ -56,9 +57,11 @@ RegisterNetEvent("mwg_jobsystem:levelup", function(level, job)
 end)
 
 RegisterCommand("onduty", function(source, args, rawCommand)
+    OnDuty = true
     TriggerServerEvent("mwg_jobsystem:onduty")
 end)
 
 RegisterCommand("offduty", function(source, args, rawCommand)
+    OnDuty = false
     TriggerServerEvent("mwg_jobsystem:offduty")
 end)
