@@ -1,10 +1,27 @@
-local JobsList = {}
+JobList = {}
+JobLevels = {}
+GetAllJobs(function(jobs)
+    for k, v in ipairs(jobs) do
+        JobInfo = {
+            id = v.id,
+            name = v.name,
+            description = v.description,
+            onDutyEvent = v.onDutyEvent,
+            offDutyEvent = v.offDutyEvent,
+            expGainEvent = v.expGainEvent,
+            expLossEvent = v.expLossEvent,
+            levelUpEvent = v.levelUpEvent
+        }
+        JobList[v.name] = JobInfo
+    end
+end)
 
-GetAllJobs(function(result)
-    JobsList = result
-    if JobsList ~= nil then
-        print(JobsList[1].name)
-    else
-        print('No jobs found!')
+GetAllLevels(function(levels)
+    for _, v in ipairs(levels) do
+        LevelInfo = {
+            level = v.level,
+            minxp = v.minxp
+        }
+        JobLevels[v.level] = LevelInfo
     end
 end)

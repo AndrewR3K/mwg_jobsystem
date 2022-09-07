@@ -3,7 +3,10 @@ CREATE TABLE IF NOT EXISTS jobs (
     name VARCHAR(50) NOT NULL,
     description VARCHAR(150) NULL,
     onDutyEvent VARCHAR(150) NULL,
-    offDutyEvent VARCHAR(150) NULL
+    offDutyEvent VARCHAR(150) NULL,
+    expGainEvent VARCHAR(150) NULL,
+    expLossEvent VARCHAR(150) NULL,
+    levelUpEvent VARCHAR(150) NULL
 );
 
 CREATE TABLE IF NOT EXISTS character_jobs (
@@ -11,6 +14,8 @@ CREATE TABLE IF NOT EXISTS character_jobs (
     charid INT NOT NULL,
     jobid INT NOT NULL,
     totalxp INT NOT NULL DEFAULT 1,
+    level INT NULL,
+    active TINYINT(1) NULL,
     PRIMARY KEY (identifier, charid, jobid)
 );
 
