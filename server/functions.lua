@@ -19,21 +19,30 @@ end
 
 -- Identifier, CharIdentifier, jobid, level, totalxp, xp
 function SetXp(identifier, charIdentifier, jobid, level, totalxp, xp, add, cb)
-    local TotalXp = totalxp
+
+    local _totalxp = totalxp
+    local xploss
     if add then
-        TotalXp = TotalXp + xp
+        _totalxp = _totalxp + xp
     else
-        TotalXp = TotalXp - xp
+        _totalxp = _totalxp - xp
+        if _totalxp < JobLevels[level].minxp then
+            _totalxp = JobLevels[level].minxp
+        end
+        xploss = totalxp - _totalxp
     end
 
-    if TotalXp < JobLevels[level].minxp then
-        TotalXp = JobLevels[level].minxp
+    local _level = level
+    for _, v in ipairs(JobLevels) do
+        if _totalxp >= v.minxp and v.level > level then
+            _level = v.level
+        end
     end
 
-    exports.oxmysql:query("UPDATE character_jobs SET totalxp = ? WHERE identifier = ? and charid = ? and jobid = ?;",
-        { TotalXp, identifier, charIdentifier, jobid }, function(result)
+    exports.oxmysql:query("UPDATE character_jobs SET `totalxp` = ?, `level` = ? WHERE identifier = ? and charid = ? and jobid = ?;"
+        , { _totalxp, _level, identifier, charIdentifier, jobid }, function(result)
         if result.affectedRows == 1 then
-            cb(true, TotalXp)
+            cb(_totalxp, _level, xploss)
         end
     end)
 end

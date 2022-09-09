@@ -1,7 +1,8 @@
 JobList = {}
 JobLevels = {}
+
 GetAllJobs(function(jobs)
-    for k, v in ipairs(jobs) do
+    for _, v in ipairs(jobs) do
         JobInfo = {
             id = v.id,
             name = v.name,
@@ -12,7 +13,7 @@ GetAllJobs(function(jobs)
             expLossEvent = v.expLossEvent,
             levelUpEvent = v.levelUpEvent
         }
-        JobList[v.name] = JobInfo
+        JobList[v.id] = JobInfo
     end
 end)
 

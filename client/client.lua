@@ -15,11 +15,14 @@ end)
 
 RegisterNetEvent("vorp:SelectedCharacter")
 AddEventHandler("vorp:SelectedCharacter", function(charid)
-    TriggerServerEvent("mwg_jobsystem:loadclientdata")
+    TriggerServerEvent("mwg_jobsystem:loadClientData")
 end)
 
-RegisterNetEvent("mwg_jobsystem:returnclientdata", function(JobData)
-    Job = json.decode(JobData)
+RegisterNetEvent("mwg_jobsystem:returnClientData", function(JobData)
+    for k, v in pairs(JobData) do
+        print(string.format("%s: %s", k, v))
+    end
+    Job = JobData
 end)
 
 Citizen.CreateThread(function()
@@ -36,9 +39,6 @@ end)
 
 RegisterNetEvent("mwg_jobsystem:openJobsMenu", function(jobs)
     if jobs ~= nil then
-        for k, v in pairs(jobs) do
-            print(k, ": ", v)
-        end
         MenuData.CloseAll()
 
         MenuData.Open('default', GetCurrentResourceName(), 'menuapi',
@@ -53,8 +53,7 @@ RegisterNetEvent("mwg_jobsystem:openJobsMenu", function(jobs)
                     _G[data.trigger]()
                 end
 
-                local jobname = data.current.value
-                TriggerServerEvent("mwg_jobsystem:selectJob", jobname, data.current.job_id)
+                TriggerServerEvent("mwg_jobsystem:selectJob", data.current.job_name, data.current.value)
                 menu.close()
             end,
             function(data, menu)
@@ -65,8 +64,8 @@ RegisterNetEvent("mwg_jobsystem:openJobsMenu", function(jobs)
     end
 end)
 
-RegisterNetEvent("mwg_jobsystem:levelup", function(level, job)
-    VORPcore.NotifySimpleTop(_U("LevelUpTitle") .. level, _U("LevelUpSubtitle") .. job, 4000)
+RegisterNetEvent("mwg_jobsystem:levelup", function(level)
+    VORPcore.NotifySimpleTop(_U("LevelUpTitle") .. level, _U("LevelUpSubtitle") .. Job.jobName, 4000)
 end)
 
 RegisterNetEvent("mwg_jobsystem:addxp", function(xp)
@@ -88,7 +87,6 @@ RegisterCommand("offduty", function(source, args, rawCommand)
 end)
 
 RegisterCommand("jobinfo", function(source, args, rawCommand)
-    print('Calling Job Info')
     for k, v in pairs(Job) do
         print(string.format("%s: %v", k, v))
     end
