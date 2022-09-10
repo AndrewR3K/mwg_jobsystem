@@ -3,9 +3,7 @@ games { 'rdr3' }
 rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aware my resources *will* become incompatible once RedM ships.'
 
 author 'SavSin'
-description 'Simple Job Menu'
-
-ui_page 'html/index.html'
+description 'Job system with Levels'
 
 client_scripts {
     'client/*.lua',
@@ -23,9 +21,14 @@ server_scripts {
 }
 
 files {
-    -- 'html/index.html',
-    -- 'html/index.js'
+    'ui/*',
+    'ui/vendor/*',
+    'ui/assets/*',
+    'ui/assets/fonts/*'
 }
+
+ui_page 'ui/index.html'
+
 dependencies {
     'vorp_core',
     'oxmysql'

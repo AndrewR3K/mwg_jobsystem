@@ -3,6 +3,7 @@ local Inmenu
 local VORPcore = {}
 local OnDuty = false
 local Job = {}
+local UIShowing = false
 
 -- Get Menu
 TriggerEvent("menuapi:getData", function(call)
@@ -19,10 +20,13 @@ AddEventHandler("vorp:SelectedCharacter", function(charid)
 end)
 
 RegisterNetEvent("mwg_jobsystem:returnClientData", function(JobData)
-    for k, v in pairs(JobData) do
-        print(string.format("%s: %s", k, v))
-    end
     Job = JobData
+    if not UIShowing then
+        OpenUI(false)
+        UIShowing = true
+    else
+        OpenUI(true)
+    end
 end)
 
 Citizen.CreateThread(function()
@@ -65,7 +69,12 @@ RegisterNetEvent("mwg_jobsystem:openJobsMenu", function(jobs)
 end)
 
 RegisterNetEvent("mwg_jobsystem:levelup", function(level)
+    CloseUI()
     VORPcore.NotifySimpleTop(_U("LevelUpTitle") .. level, _U("LevelUpSubtitle") .. Job.jobName, 4000)
+
+    Wait(5000)
+    OpenUI(false)
+    UIShowing = true
 end)
 
 RegisterNetEvent("mwg_jobsystem:addxp", function(xp)
@@ -86,8 +95,25 @@ RegisterCommand("offduty", function(source, args, rawCommand)
     TriggerServerEvent("mwg_jobsystem:offduty")
 end)
 
-RegisterCommand("jobinfo", function(source, args, rawCommand)
-    for k, v in pairs(Job) do
-        print(string.format("%s: %v", k, v))
+function CloseUI()
+    SendNUIMessage({
+        type = 'close'
+    })
+    SetNuiFocus(false, false)
+end
+
+function OpenUI(UpdateOnly)
+    if UpdateOnly then
+        SendNUIMessage({
+            type = 'update',
+            jobData = Job
+        })
+    else
+        SendNUIMessage({
+            type = 'open',
+            jobData = Job
+        })
     end
-end)
+
+    SetNuiFocus(false, false)
+end

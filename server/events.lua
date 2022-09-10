@@ -55,13 +55,22 @@ RegisterServerEvent("mwg_jobsystem:updateClientInfo", function(source, jobid)
         , { Character.identifier, Character.charIdentifier, jobid }, function(result)
 
         if result[1] then
+            local nextLevel, nextLevelXp
+            if JobLevels[result[1].level + 1] ~= nil then
+                nextLevel = JobLevels[result[1].level + 1].level
+                nextLevelXp = JobLevels[result[1].level + 1].minxp
+            else
+                nextLevel = result[1].level
+                nextLevelXp = JobLevels[result[1].level].minxp
+            end
             local CharJobDetails = {
                 jobName = result[1].name,
                 jobID = result[1].jobid,
                 totalXp = result[1].totalxp,
                 level = result[1].level,
-                nextLevel = JobLevels[result[1].level + 1].level,
-                nextLevelXp = JobLevels[result[1].level + 1].minxp
+                nextLevel = nextLevel,
+                nextLevelXp = nextLevelXp,
+                currentLevelMinXp = JobLevels[result[1].level].minxp
             }
 
             TriggerClientEvent("mwg_jobsystem:returnClientData", _source, CharJobDetails)
@@ -78,13 +87,22 @@ RegisterServerEvent("mwg_jobsystem:loadClientData", function()
     exports.oxmysql:query("SELECT `character_jobs`.`jobid`, `character_jobs`.`totalxp`, `character_jobs`.`level`, `jobs`.`name` FROM `character_jobs` INNER JOIN `jobs` ON `character_jobs`.jobid=`jobs`.id WHERE `identifier`=? and `charid`=? and `active`=1 LIMIT 1;"
         , { Character.identifier, Character.charIdentifier }, function(result)
         if result[1] then
+            local nextLevel, nextLevelXp
+            if JobLevels[result[1].level + 1] ~= nil then
+                nextLevel = JobLevels[result[1].level + 1].level
+                nextLevelXp = JobLevels[result[1].level + 1].minxp
+            else
+                nextLevel = result[1].level
+                nextLevelXp = JobLevels[result[1].level].minxp
+            end
             local CharJobDetails = {
                 jobName = result[1].name,
                 jobID = result[1].jobid,
                 totalXp = result[1].totalxp,
                 level = result[1].level,
-                nextLevel = JobLevels[result[1].level + 1].level,
-                nextLevelXp = JobLevels[result[1].level + 1].minxp
+                nextLevel = nextLevel,
+                nextLevelXp = nextLevelXp,
+                currentLevelMinXp = JobLevels[result[1].level].minxp
             }
             TriggerClientEvent("mwg_jobsystem:returnClientData", _source, CharJobDetails)
         end
