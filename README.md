@@ -31,11 +31,13 @@ The [MWG Test Job](https://github.com/DavFount/mwg_testjob) is to serve as an ex
 
 #### Screen Shots
 **Menu + UI:**
-![Screenshot1](https://github.com/DavFount/mwg_jobsystem/blob/master/UI_Menu.jpg?raw=true)
+![Screenshot1](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/UI_Menu.jpg?raw=true)
+**UI With XP:**
+![Screenshot2](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/UI_With_XP.jpg?raw=true)
 **Max Level UI:**
-![Screenshot2](https://github.com/DavFount/mwg_jobsystem/blob/master/MaxLevel.jpg?raw=true)
+![Screenshot3](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/MaxLevel.jpg?raw=true)
 **Level Up Notification:**
-![Screenshot3](https://github.com/DavFount/mwg_jobsystem/blob/master/LevelUp.jpg?raw=true)
+![Screenshot4](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/LevelUp.jpg?raw=true)
 #### DEPENDENCIES
 - [vorp_core](https://github.com/VORPCORE/vorp-core-lua)
 - [menuapi](https://github.com/outsider31000/menuapi)
