@@ -33,11 +33,15 @@ Citizen.CreateThread(function()
     while true do
         local player = PlayerPedId()
         local isDead = IsPedDeadOrDying(player)
-        if IsControlJustPressed(0, Key) and not isDead and not Inmenu and not OnDuty then
-            MenuData.CloseAll()
-            TriggerServerEvent("mwg_jobsystem:getJobs", "jobsystem.openJobsMenu")
-        elseif OnDuty then
-            VORPcore.NotifyRightTip(_U("OnDutyNoMenu"), 4000)
+        if not isDead and not Inmenu then
+            if IsControlJustPressed(0, Key) then
+                if not OnDuty then
+                    MenuData.CloseAll()
+                    TriggerServerEvent("mwg_jobsystem:getJobs", "jobsystem.openJobsMenu")
+                else
+                    VORPcore.NotifyRightTip(_U("OnDutyNoMenu"), 4000)
+                end
+            end
         end
         Citizen.Wait(10)
     end
