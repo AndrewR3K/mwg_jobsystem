@@ -62,7 +62,7 @@ RegisterServerEvent("mwg_jobsystem:getJobs", function()
     local User = VorpCore.getUser(_source)
     local Character = User.getUsedCharacter
 
-    exports.oxmysql:query("SELECT * from character_jobs WHERE identifier = ? and charid = ?;"
+    exports.oxmysql:query("SELECT jobid, level, active from character_jobs WHERE identifier = ? and charid = ?;"
         , { Character.identifier, Character.charIdentifier }, function(result)
         local jobMenuData = {}
         local charJobInfo = {}
@@ -78,10 +78,10 @@ RegisterServerEvent("mwg_jobsystem:getJobs", function()
         for _, v in pairs(JobList) do
             local menuItemLabel
             if charJobInfo[tostring(v.id)] then
-                if charJobInfo[tostring(v.id)].active == 0 then
-                    menuItemLabel = string.format("%s (Level: %s)", v.name, charJobInfo[tostring(v.id)].level)
-                else
+                if charJobInfo[tostring(v.id)].active then
                     menuItemLabel = string.format("%s (Active)", v.name)
+                else
+                    menuItemLabel = string.format("%s (Level: %s)", v.name, charJobInfo[tostring(v.id)].level)
                 end
             else
                 menuItemLabel = v.name
