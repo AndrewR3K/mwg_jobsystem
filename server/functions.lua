@@ -1,23 +1,48 @@
--- Called once on server start to get all jobs. New Jobs registered after will be added to the table.
-function GetAllJobs(cb)
-    exports.oxmysql:query("SELECT `name`, `description`, `id` FROM jobs ORDER BY `name` ASC;",
+JobList = {}
+JobLevels = {}
+
+local VorpCore = {}
+TriggerEvent("getCore", function(core)
+    VorpCore = core
+end)
+
+function GetAllJobs()
+    exports.oxmysql:query("SELECT * FROM jobs ORDER BY `name` ASC;",
         function(result)
             if result then
-                cb(result)
+                for _, job in ipairs(result) do
+                    JobInfo = {
+                        id = job.id,
+                        name = job.name,
+                        description = job.description,
+                        onDutyEvent = job.onDutyEvent,
+                        offDutyEvent = job.offDutyEvent,
+                        expGainEvent = job.expGainEvent,
+                        expLossEvent = job.expLossEvent,
+                        levelUpEvent = job.levelUpEvent,
+                        maxLevelEvent = job.maxLevelEvent
+                    }
+                    JobList[tostring(job.id)] = JobInfo
+                end
             end
         end)
 end
 
--- Called once on server start to get all levels. (Adding levels requires restart of script or server)
-function GetAllLevels(cb)
+function GetAllLevels()
     exports.oxmysql:query("SELECT * from job_levels ORDER BY `level` ASC;", function(result)
         if result then
-            cb(result)
+            for _, level in ipairs(result) do
+                LevelInfo = {
+                    level = level.level,
+                    minxp = level.minxp
+                }
+                JobLevels[level.level] = LevelInfo
+            end
         end
     end)
 end
 
--- Identifier, CharIdentifier, jobid, level, totalxp, xp
+-- Sets Job Experience. Detects Level up and prevents decreasing XP below minxp for characters current level.
 function SetXp(identifier, charIdentifier, jobid, level, totalxp, xp, add, cb)
 
     local _totalxp = totalxp
@@ -43,6 +68,35 @@ function SetXp(identifier, charIdentifier, jobid, level, totalxp, xp, add, cb)
         , { _totalxp, _level, identifier, charIdentifier, jobid }, function(result)
         if result.affectedRows == 1 then
             cb(_totalxp, _level, xploss)
+        end
+    end)
+end
+
+function GetCharJobDetails(source, cb)
+    local User = VorpCore.getUser(source)
+    local Character = User.getUsedCharacter
+
+    exports.oxmysql:query("SELECT `character_jobs`.`jobid`, `character_jobs`.`totalxp`, `character_jobs`.`level`, `jobs`.`name` FROM `character_jobs` INNER JOIN `jobs` ON `character_jobs`.jobid=`jobs`.id WHERE `identifier`=? and `charid`=? and `active`=1 LIMIT 1;"
+        , { Character.identifier, Character.charIdentifier }, function(result)
+        if result[1] then
+            local nextLevel, nextLevelXp
+            if JobLevels[result[1].level + 1] ~= nil then
+                nextLevel = JobLevels[result[1].level + 1].level
+                nextLevelXp = JobLevels[result[1].level + 1].minxp
+            else
+                nextLevel = result[1].level
+                nextLevelXp = JobLevels[result[1].level].minxp
+            end
+            local CharJobDetails = {
+                jobName = result[1].name,
+                jobID = result[1].jobid,
+                totalXp = result[1].totalxp,
+                level = result[1].level,
+                nextLevel = nextLevel,
+                nextLevelXp = nextLevelXp,
+                currentLevelMinXp = JobLevels[result[1].level].minxp
+            }
+            cb(CharJobDetails)
         end
     end)
 end

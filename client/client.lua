@@ -1,8 +1,8 @@
-local Key = Config.Key
+local Key = Config.Keys["PGUP"]
 local Inmenu
 local VORPcore = {}
-local OnDuty = false
-local Job = {}
+OnDuty = false
+Job = {}
 local UIShowing = false
 
 -- Get Menu
@@ -16,7 +16,7 @@ end)
 
 RegisterNetEvent("vorp:SelectedCharacter")
 AddEventHandler("vorp:SelectedCharacter", function(charid)
-    TriggerServerEvent("mwg_jobsystem:loadClientData")
+    TriggerServerEvent("mwg_jobsystem:getJobDetails", "mwg_jobsystem:returnClientData")
 end)
 
 RegisterNetEvent("mwg_jobsystem:returnClientData", function(JobData)
@@ -36,6 +36,8 @@ Citizen.CreateThread(function()
         if IsControlJustPressed(0, Key) and not isDead and not Inmenu and not OnDuty then
             MenuData.CloseAll()
             TriggerServerEvent("mwg_jobsystem:getJobs", "jobsystem.openJobsMenu")
+        elseif OnDuty then
+            VORPcore.NotifyRightTip(_U("OnDutyNoMenu"), 4000)
         end
         Citizen.Wait(10)
     end
@@ -57,7 +59,7 @@ RegisterNetEvent("mwg_jobsystem:openJobsMenu", function(jobs)
                     _G[data.trigger]()
                 end
 
-                TriggerServerEvent("mwg_jobsystem:selectJob", data.current.job_name, data.current.value)
+                TriggerServerEvent("mwg_jobsystem:jobSelected", data.current.job_name, data.current.value)
                 menu.close()
             end,
             function(data, menu)
@@ -72,27 +74,27 @@ RegisterNetEvent("mwg_jobsystem:levelup", function(level)
     CloseUI()
     VORPcore.NotifySimpleTop(_U("LevelUpTitle") .. level, _U("LevelUpSubtitle") .. Job.jobName, 4000)
 
-    Wait(5000)
+    Wait(6000)
     OpenUI(false)
     UIShowing = true
 end)
 
-RegisterNetEvent("mwg_jobsystem:addxp", function(xp)
+AddEventHandler("mwg_jobsystem:addxp", function(xp)
     TriggerServerEvent("mwg_jobsystem:modifyJobExperience", Job.jobID, Job.level, Job.totalXp, xp, true)
 end)
 
-RegisterNetEvent("mwg_jobsystem:remxp", function(xp)
+AddEventHandler("mwg_jobsystem:remxp", function(xp)
     TriggerServerEvent("mwg_jobsystem:modifyJobExperience", Job.jobID, Job.level, Job.totalXp, xp, false)
 end)
 
 RegisterCommand("onduty", function(source, args, rawCommand)
     OnDuty = true
-    TriggerServerEvent("mwg_jobsystem:onduty")
+    TriggerServerEvent("mwg_jobsystem:onduty", Job.jobID)
 end)
 
 RegisterCommand("offduty", function(source, args, rawCommand)
     OnDuty = false
-    TriggerServerEvent("mwg_jobsystem:offduty")
+    TriggerServerEvent("mwg_jobsystem:offduty", Job.jobID)
 end)
 
 function CloseUI()

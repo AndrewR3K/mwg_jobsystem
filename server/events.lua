@@ -3,33 +3,7 @@ TriggerEvent("getCore", function(core)
     VorpCore = core
 end)
 
-RegisterServerEvent("mwg_jobsystem:registerJob",
-    function(jobName, description, onDutyEvent, offDutyEvent, expGainEvent, expLossEvent, levelUpEvent)
-        exports.oxmysql:query("SELECT name FROM jobs WHERE name = ?", { jobName },
-            function(result)
-                -- Check if job does not exists in table
-                if not result[1] then
-                    -- Create job in table
-                    exports.oxmysql:query("INSERT INTO jobs (`name`, `description`, `onDutyEvent`, `offDutyEvent`, `expGainEvent`, `expLossEvent`, `levelUpEvent`) VALUES (?, ?, ?, ?, ?, ?, ?);"
-                        , { jobName, description, onDutyEvent, offDutyEvent, expGainEvent, expLossEvent, levelUpEvent },
-                        function(result)
-                            JobInfo = {
-                                id = result.insertId,
-                                name = jobName,
-                                description = description,
-                                onDutyEvent = onDutyEvent,
-                                offDutyEvent = offDutyEvent,
-                                expGainEvent = expGainEvent,
-                                expLossEvent = expLossEvent,
-                                levelUpEvent = levelUpEvent
-                            }
-                            JobList[tostring(result.insertId)] = JobInfo
-                        end)
-                end
-            end)
-    end)
-
-RegisterServerEvent("mwg_jobsystem:setJob", function(source, jobid)
+AddEventHandler("mwg_jobsystem:setJob", function(source, jobid)
     local _source = source
     local User = VorpCore.getUser(_source)
     local Character = User.getUsedCharacter
@@ -40,77 +14,25 @@ RegisterServerEvent("mwg_jobsystem:setJob", function(source, jobid)
         exports.oxmysql:query("UPDATE character_jobs SET active=1 WHERE identifier = ? and charid = ? and jobid = ?;",
             { Character.identifier, Character.charIdentifier, jobid }, function(_)
 
-            TriggerEvent("mwg_jobsystem:updateClientInfo", _source, jobid)
+            TriggerEvent("mwg_jobsystem:getJobDetails", "mwg_jobsystem:returnClientData", _source)
         end)
     end)
 end)
 
--- Called from server to update UI Info
-RegisterServerEvent("mwg_jobsystem:updateClientInfo", function(source, jobid)
-    local _source = source
-    local User = VorpCore.getUser(_source)
-    local Character = User.getUsedCharacter
+RegisterServerEvent("mwg_jobsystem:getJobDetails", function(cb, providedSource)
+    local _source
+    if providedSource == nil then
+        _source = source
+    else
+        _source = providedSource
+    end
 
-    exports.oxmysql:query("SELECT `character_jobs`.`jobid`, `character_jobs`.`totalxp`, `character_jobs`.`level`, `jobs`.`name` FROM `character_jobs` INNER JOIN `jobs` ON `character_jobs`.jobid=`jobs`.id WHERE `identifier`=? and `charid`=? and `jobid`=? LIMIT 1;"
-        , { Character.identifier, Character.charIdentifier, jobid }, function(result)
-
-        if result[1] then
-            local nextLevel, nextLevelXp
-            if JobLevels[result[1].level + 1] ~= nil then
-                nextLevel = JobLevels[result[1].level + 1].level
-                nextLevelXp = JobLevels[result[1].level + 1].minxp
-            else
-                nextLevel = result[1].level
-                nextLevelXp = JobLevels[result[1].level].minxp
-            end
-            local CharJobDetails = {
-                jobName = result[1].name,
-                jobID = result[1].jobid,
-                totalXp = result[1].totalxp,
-                level = result[1].level,
-                nextLevel = nextLevel,
-                nextLevelXp = nextLevelXp,
-                currentLevelMinXp = JobLevels[result[1].level].minxp
-            }
-
-            TriggerClientEvent("mwg_jobsystem:returnClientData", _source, CharJobDetails)
-        end
+    GetCharJobDetails(_source, function(jobDetails)
+        TriggerClientEvent(cb, _source, jobDetails)
     end)
 end)
 
--- Called from client to get job UI Info
-RegisterServerEvent("mwg_jobsystem:loadClientData", function()
-    local _source = source
-    local User = VorpCore.getUser(_source)
-    local Character = User.getUsedCharacter
-
-    exports.oxmysql:query("SELECT `character_jobs`.`jobid`, `character_jobs`.`totalxp`, `character_jobs`.`level`, `jobs`.`name` FROM `character_jobs` INNER JOIN `jobs` ON `character_jobs`.jobid=`jobs`.id WHERE `identifier`=? and `charid`=? and `active`=1 LIMIT 1;"
-        , { Character.identifier, Character.charIdentifier }, function(result)
-        if result[1] then
-            local nextLevel, nextLevelXp
-            if JobLevels[result[1].level + 1] ~= nil then
-                nextLevel = JobLevels[result[1].level + 1].level
-                nextLevelXp = JobLevels[result[1].level + 1].minxp
-            else
-                nextLevel = result[1].level
-                nextLevelXp = JobLevels[result[1].level].minxp
-            end
-            local CharJobDetails = {
-                jobName = result[1].name,
-                jobID = result[1].jobid,
-                totalXp = result[1].totalxp,
-                level = result[1].level,
-                nextLevel = nextLevel,
-                nextLevelXp = nextLevelXp,
-                currentLevelMinXp = JobLevels[result[1].level].minxp
-            }
-            TriggerClientEvent("mwg_jobsystem:returnClientData", _source, CharJobDetails)
-        end
-    end)
-end)
-
-
-RegisterServerEvent("mwg_jobsystem:selectJob", function(newjob, newjobid)
+RegisterServerEvent("mwg_jobsystem:jobSelected", function(newjob, newjobid)
     local _source = source
     local User = VorpCore.getUser(_source)
     local Character = User.getUsedCharacter
@@ -135,7 +57,7 @@ RegisterServerEvent("mwg_jobsystem:selectJob", function(newjob, newjobid)
         end)
 end)
 
-RegisterServerEvent("mwg_jobsystem:getJobs", function(cb)
+RegisterServerEvent("mwg_jobsystem:getJobs", function()
     local _source = source
     local User = VorpCore.getUser(_source)
     local Character = User.getUsedCharacter
@@ -143,17 +65,24 @@ RegisterServerEvent("mwg_jobsystem:getJobs", function(cb)
     exports.oxmysql:query("SELECT * from character_jobs WHERE identifier = ? and charid = ?;"
         , { Character.identifier, Character.charIdentifier }, function(result)
         local jobMenuData = {}
-        local charJobLevels = {}
+        local charJobInfo = {}
         if result[1] then
             for _, v in pairs(result) do
-                charJobLevels[tostring(v.jobid)] = v.level
+                charJobInfo[tostring(v.jobid)] = {
+                    level = v.level,
+                    active = v.active
+                }
             end
         end
 
         for _, v in pairs(JobList) do
             local menuItemLabel
-            if charJobLevels[tostring(v.id)] then
-                menuItemLabel = string.format("%s (Level: %s)", v.name, charJobLevels[tostring(v.id)])
+            if charJobInfo[tostring(v.id)] then
+                if charJobInfo[tostring(v.id)].active == 0 then
+                    menuItemLabel = string.format("%s (Level: %s)", v.name, charJobInfo[tostring(v.id)].level)
+                else
+                    menuItemLabel = string.format("%s (Active)", v.name)
+                end
             else
                 menuItemLabel = v.name
             end
@@ -177,12 +106,20 @@ RegisterServerEvent("mwg_jobsystem:modifyJobExperience", function(jobid, level, 
     local Identifier = Character.identifier
 
     SetXp(Identifier, CharIdentifier, jobid, level, totalxp, xp, addxp, function(newTotalXp, newLevel, xploss)
-        TriggerEvent("mwg_jobsystem:updateClientInfo", _source, jobid)
+        -- Update UI
+        TriggerEvent("mwg_jobsystem:getJobDetails", "mwg_jobsystem:returnClientData", _source)
 
         if newLevel > level then
-            if JobList[jobid].levelUpEvent then
-                TriggerClientEvent(JobList[jobid].levelUpEvent)
+            local maxLevelEvent = JobList[tostring(jobid)].maxLevelEvent
+            if JobLevels[newLevel + 1] == nil and maxLevelEvent then
+                TriggerClientEvent(maxLevelEvent, _source)
             end
+
+            local levelUpEvent = JobList[tostring(jobid)].levelUpEvent
+            if levelUpEvent then
+                TriggerClientEvent(levelUpEvent, _source, newLevel)
+            end
+            -- Triggers Notification and UI Update
             TriggerClientEvent("mwg_jobsystem:levelup", _source, newLevel)
         end
 
@@ -192,12 +129,14 @@ RegisterServerEvent("mwg_jobsystem:modifyJobExperience", function(jobid, level, 
             VorpCore.NotifyRightTip(_source, _U("ExpLoss") .. xploss, 4000)
         end
 
-        if JobList[jobid].expGainEvent and addxp then
-            TriggerClientEvent(JobList[jobid].expGainEvent, _source, xp, newTotalXp, newLevel)
+        local expGainEvent = JobList[tostring(jobid)].expGainEvent
+        if expGainEvent and addxp then
+            TriggerClientEvent(expGainEvent, _source, xp, newTotalXp, newLevel)
         end
 
-        if JobList[jobid].expLossEvent and not addxp then
-            TriggerClientEvent(JobList[jobid].expLossEvent, _source, xp, newTotalXp, xploss, newLevel)
+        local expLossEvent = JobList[tostring(jobid)].expLossEvent
+        if expLossEvent and not addxp then
+            TriggerClientEvent(expLossEvent, _source, xp, newTotalXp, xploss, newLevel)
         end
     end)
 end)
@@ -212,7 +151,7 @@ end)
 
 RegisterServerEvent("mwg_jobsystem:offduty", function(jobid)
     local _source = source
-    local offDutyEvent = JobList[tostring(jobid)].onDutyEvent
+    local offDutyEvent = JobList[tostring(jobid)].offDutyEvent
     if offDutyEvent then
         TriggerClientEvent(offDutyEvent, _source)
     end

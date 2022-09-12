@@ -14,7 +14,14 @@
         <div class="job">
           {{ jobDetails.jobName }}
         </div>
-        <div class="progression">
+        <div class="progression" v-if="maxLevel">
+          <span class="maxLevel">
+            <i class="fa-regular fa-stars"></i>
+            Max Level
+            <i class="fa-regular fa-stars"></i>
+          </span>
+        </div>
+        <div class="progression" v-else>
           <span class="level"> {{ jobDetails.level }} </span>
           <progress id="xpbar" :value="currentXpPercentage" max="100">{{ jobDetails.totalXp }}</progress>
           <span class="level">{{ jobDetails.nextLevel }}</span>
@@ -29,3 +36,4 @@
 <!-- Import your JS app and JS Vendor (vue.js) -->
 <script src="vendor/vue.js"></script>
 <script src="app.js"></script>
+<script src="https://kit.fontawesome.com/1d524b27dc.js" crossorigin="anonymous"></script>

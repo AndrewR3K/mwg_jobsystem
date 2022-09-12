@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS jobs (
     offDutyEvent VARCHAR(150) NULL,
     expGainEvent VARCHAR(150) NULL,
     expLossEvent VARCHAR(150) NULL,
-    levelUpEvent VARCHAR(150) NULL
+    levelUpEvent VARCHAR(150) NULL,
+    maxLevelEvent VARCHAR(150) NULL
 );
 
 CREATE TABLE IF NOT EXISTS character_jobs (
@@ -16,7 +17,8 @@ CREATE TABLE IF NOT EXISTS character_jobs (
     totalxp INT NOT NULL DEFAULT 1,
     level INT NULL,
     active TINYINT(1) NULL,
-    PRIMARY KEY (identifier, charid, jobid)
+    UNIQUE INDEX Identifier_CharIdentifier_JobIdentifier (identifier,charid,jobid) USING BTREE,
+    CONSTRAINT `FK_character_jobs_jobs` FOREIGN KEY (`jobid`) REFERENCES `jobs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS job_levels (

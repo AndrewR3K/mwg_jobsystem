@@ -111,6 +111,11 @@ body {
   color: #d89a2e;
 }
 
+.maxLevel {
+  color: #d89a2e;
+  font-size: 20px;
+}
+
 .progression {
   vertical-align: middle;
 }
