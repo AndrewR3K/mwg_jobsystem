@@ -20,8 +20,8 @@ This is a job system for VORP that provides a simple way to register various job
     -- To change the key used to open the menu. Reference the KEYS table in the config file and change the value on line one of the client.lua file.
 ```
 
-
 #### INSTALATION
+- run the included SQL file `db.sql`.
 - add `ensure mwg_jobsystem` to your `resources.cfg`.
 - restart server, enjoy.
 - Note: All of your job scripts must be ensured after this one.
@@ -29,6 +29,13 @@ This is a job system for VORP that provides a simple way to register various job
 #### Sample Job
 The [MWG Test Job](https://github.com/DavFount/mwg_testjob) is to serve as an example on how to work with the Job System.
 
+#### Screen Shots
+Menu + UI:
+![Screenshot1](https://github.com/DavFount/mwg_jobsystem/blob/master/UI_Menu.jpg?raw=true)
+Max Level UI:
+![Screenshot2](https://github.com/DavFount/mwg_jobsystem/blob/master/MaxLevel.jpg?raw=true)
+Level Up Notification:
+![Screenshot3](https://github.com/DavFount/mwg_jobsystem/blob/master/LevelUp.jpg?raw=true)
 #### DEPENDENCIES
 - [vorp_core](https://github.com/VORPCORE/vorp-core-lua)
 - [menuapi](https://github.com/outsider31000/menuapi)
