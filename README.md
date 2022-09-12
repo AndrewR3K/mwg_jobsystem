@@ -30,11 +30,11 @@ This is a job system for VORP that provides a simple way to register various job
 The [MWG Test Job](https://github.com/DavFount/mwg_testjob) is to serve as an example on how to work with the Job System.
 
 #### Screen Shots
-Menu + UI:
+**Menu + UI:**
 ![Screenshot1](https://github.com/DavFount/mwg_jobsystem/blob/master/UI_Menu.jpg?raw=true)
-Max Level UI:
+**Max Level UI:**
 ![Screenshot2](https://github.com/DavFount/mwg_jobsystem/blob/master/MaxLevel.jpg?raw=true)
-Level Up Notification:
+**Level Up Notification:**
 ![Screenshot3](https://github.com/DavFount/mwg_jobsystem/blob/master/LevelUp.jpg?raw=true)
 #### DEPENDENCIES
 - [vorp_core](https://github.com/VORPCORE/vorp-core-lua)
