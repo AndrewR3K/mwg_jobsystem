@@ -37,6 +37,8 @@ RegisterServerEvent("mwg_jobsystem:jobSelected", function(newjob, newjobid)
     local User = VorpCore.getUser(_source)
     local Character = User.getUsedCharacter
 
+    TriggerClientEvent("mwg_jobsystem:setLastJobChange", _source)
+
     exports.oxmysql:query("SELECT * FROM character_jobs WHERE identifier = ? and charid = ? and jobid = ?"
         , { Character.identifier, Character.charIdentifier, newjobid },
         function(result)

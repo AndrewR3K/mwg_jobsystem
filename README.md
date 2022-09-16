@@ -6,6 +6,7 @@ This is a job system for VORP that provides a simple way to register various job
 
 #### FEATURES
 - Configurable job menu open to all users (Only available while Off-Duty)
+- Configurable delay between job changes (with tip prompt)
 - Each job that gets registered has its own level system
 - Various events/functions that can be used from the job creators to check levels
 - Nice notifications for when XP is gained (xp gain is set by the job creator)
@@ -16,6 +17,7 @@ This is a job system for VORP that provides a simple way to register various job
 #### Configuration
 ```lua
     defaultlang = "en_lang",
+    jobChangeDelay = 10, -- Time in minutes between job changes. 0 disables this
 
     -- To change the key used to open the menu. Reference the KEYS table in the config file and change the value on line one of the client.lua file.
 ```

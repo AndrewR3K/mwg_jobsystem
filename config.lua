@@ -2,7 +2,7 @@ Config = {
     --add your language
     defaultlang = "en_lang",
 
-    CanOpenMenuWhenDead = false,
+    jobChangeDelay = 10, -- Time in minutes before the menu is available to swap jobs
 
     Keys = {
         A = 0x7065027D,

@@ -9,5 +9,7 @@ Locales["en_lang"] = {
     ExpLoss         = "XP Lossed: ~o~",
     LevelUpTitle    = "Congradulations! You are now level ~o~",
     LevelUpSubtitle = "Job: ~o~";
-    OnDutyNoMenu    = "You must be off duty to access the job menu!"
+    OnDutyNoMenu    = "You must be off duty to access the job menu!",
+    JobChangeDelay  = "Change job in: ~o~",
+    TimeFormat      = " minutes"
 }

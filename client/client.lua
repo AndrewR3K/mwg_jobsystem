@@ -4,6 +4,7 @@ local VORPcore = {}
 OnDuty = false
 Job = {}
 local UIShowing = false
+local lastJobChange = 0
 
 -- Get Menu
 TriggerEvent("menuapi:getData", function(call)
@@ -17,6 +18,10 @@ end)
 RegisterNetEvent("vorp:SelectedCharacter")
 AddEventHandler("vorp:SelectedCharacter", function(charid)
     TriggerServerEvent("mwg_jobsystem:getJobDetails", "mwg_jobsystem:returnClientData")
+end)
+
+RegisterNetEvent("mwg_jobsystem:setLastJobChange", function()
+    lastJobChange = GetGameTimer()
 end)
 
 RegisterNetEvent("mwg_jobsystem:returnClientData", function(JobData)
@@ -36,8 +41,14 @@ Citizen.CreateThread(function()
         if not isDead and not Inmenu then
             if IsControlJustPressed(0, Key) then
                 if not OnDuty then
-                    MenuData.CloseAll()
-                    TriggerServerEvent("mwg_jobsystem:getJobs")
+                    local timeSinceJobChange = math.floor(((GetGameTimer() - lastJobChange) / 1000) / 60)
+                    if timeSinceJobChange >= Config.jobChangeDelay or lastJobChange == 0 then
+                        MenuData.CloseAll()
+                        TriggerServerEvent("mwg_jobsystem:getJobs", "jobsystem.openJobsMenu")
+                    else
+                        local nextJobChange = Config.jobChangeDelay - timeSinceJobChange
+                        VORPcore.NotifyRightTip(_U("JobChangeDelay") .. nextJobChange .. _U("TimeFormat"), 4000)
+                    end
                 else
                     VORPcore.NotifyRightTip(_U("OnDutyNoMenu"), 4000)
                 end
