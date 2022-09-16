@@ -42,15 +42,21 @@ RegisterServerEvent("mwg_jobsystem:jobSelected", function(newjob, newjobid)
         function(result)
             if result[1] then
                 TriggerEvent("mwg_jobsystem:setJob", _source, newjobid)
+                -- Set Job with VORP (Updates Character.job)
                 TriggerEvent("vorp:setJob", _source, string.lower(newjob), result[1].level)
+                -- vorp_crafting support for job locks
+                TriggerClientEvent("vorp:setjob", _source, string.lower(newjob))
                 VorpCore.NotifyRightTip(_source, _U("jobgiven") .. newjob, 5000)
                 Wait(500)
                 VorpCore.NotifyRightTip(_source, _U("gradegiven") .. result[1].level, 5000)
             else
                 exports.oxmysql:query("INSERT INTO character_jobs (`identifier`, `charid`, `jobid`, `totalxp`, `level`, `active`) VALUES (?, ?, ?, 0, 1, 1);"
                     , { Character.identifier, Character.charIdentifier, newjobid }, function(_)
+                    -- Set Job with VORP (Updates Character.job)
                     TriggerEvent("mwg_jobsystem:setJob", _source, newjobid)
+                    -- vorp_crafting support for job locks
                     TriggerEvent("vorp:setJob", _source, string.lower(newjob), 1)
+                    TriggerClientEvent("vorp:setjob", _source, string.lower(newjob))
                     VorpCore.NotifyRightTip(_source, _U("jobgiven") .. newjob, 5000)
                     Wait(500)
                     VorpCore.NotifyRightTip(_source, _U("gradegiven") .. 1, 5000)

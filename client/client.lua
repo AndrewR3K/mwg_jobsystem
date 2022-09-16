@@ -37,7 +37,7 @@ Citizen.CreateThread(function()
             if IsControlJustPressed(0, Key) then
                 if not OnDuty then
                     MenuData.CloseAll()
-                    TriggerServerEvent("mwg_jobsystem:getJobs", "jobsystem.openJobsMenu")
+                    TriggerServerEvent("mwg_jobsystem:getJobs")
                 else
                     VORPcore.NotifyRightTip(_U("OnDutyNoMenu"), 4000)
                 end
