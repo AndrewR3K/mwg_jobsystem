@@ -42,6 +42,7 @@ RegisterServerEvent("mwg_jobsystem:jobSelected", function(newjob, newjobid)
         function(result)
             if result[1] then
                 TriggerEvent("mwg_jobsystem:setJob", _source, newjobid)
+                TriggerEvent("vorp:setJob", _source, string.lower(newjob), result[1].level)
                 VorpCore.NotifyRightTip(_source, _U("jobgiven") .. newjob, 5000)
                 Wait(500)
                 VorpCore.NotifyRightTip(_source, _U("gradegiven") .. result[1].level, 5000)
@@ -49,6 +50,7 @@ RegisterServerEvent("mwg_jobsystem:jobSelected", function(newjob, newjobid)
                 exports.oxmysql:query("INSERT INTO character_jobs (`identifier`, `charid`, `jobid`, `totalxp`, `level`, `active`) VALUES (?, ?, ?, 0, 1, 1);"
                     , { Character.identifier, Character.charIdentifier, newjobid }, function(_)
                     TriggerEvent("mwg_jobsystem:setJob", _source, newjobid)
+                    TriggerEvent("vorp:setJob", _source, string.lower(newjob), 1)
                     VorpCore.NotifyRightTip(_source, _U("jobgiven") .. newjob, 5000)
                     Wait(500)
                     VorpCore.NotifyRightTip(_source, _U("gradegiven") .. 1, 5000)
@@ -121,6 +123,8 @@ RegisterServerEvent("mwg_jobsystem:modifyJobExperience", function(jobid, level, 
             end
             -- Triggers Notification and UI Update
             TriggerClientEvent("mwg_jobsystem:levelup", _source, newLevel)
+            -- TriggerEvent("vorp:setjob", _source, Character.job, newLevel)
+            UpdateVORPCharacter(Character.identifier, Character.charIdentifier, Character.job, newLevel)
         end
 
         if addxp then

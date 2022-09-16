@@ -33,10 +33,10 @@ AddEventHandler('getMWGJobSystem', function(cb)
         end)
     end
 
-    jobsystemData.getJobInfo = function(source)
+    jobsystemData.getJobInfo = function(source, cb)
         if source == nil then return nil end
         GetCharJobDetails(source, function(jobDetails)
-            return jobDetails
+            cb(jobDetails)
         end)
     end
 

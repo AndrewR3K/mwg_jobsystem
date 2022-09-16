@@ -44,7 +44,7 @@ The [MWG Test Job](https://github.com/DavFount/mwg_testjob) is to serve as an ex
 
 
 #### SUPPORT
-Feel free to create an issue if you need assitance or have issues.
+Feel free to create an issue if you need assitance or have issues. You can also visit my [official support discord](https://discord.gg/BSmJQbtBQ8).
 
 #### Credits
 - The entire Vorp Dev Team

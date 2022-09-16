@@ -73,6 +73,8 @@ function SetXp(identifier, charIdentifier, jobid, level, totalxp, xp, add, cb)
 end
 
 function GetCharJobDetails(source, cb)
+    if source == nil then return nil end
+
     local User = VorpCore.getUser(source)
     local Character = User.getUsedCharacter
 
@@ -99,4 +101,17 @@ function GetCharJobDetails(source, cb)
             cb(CharJobDetails)
         end
     end)
+end
+
+function UpdateVORPCharacter(id, charid, job, grade)
+    exports.oxmysql:query("UPDATE `characters` SET job=?, jobgrade=? WHERE `identifier`=? AND `charidentifier`=?",
+        { job, grade, id, charid }, function(result)
+
+        -- print(string.format("UPDATE `characters` SET job=%s, jobgrade=%s WHERE `identifier`=%s AND `charidentifier`=%s",
+        --     job, grade, id, charid))
+        if result.affectedRows < 1 then
+            print(string.format("Unable to update job info for %s.", id))
+        end
+    end)
+
 end
