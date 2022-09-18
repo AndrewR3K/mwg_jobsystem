@@ -21,14 +21,14 @@ body {
   touch-action: manipulation;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #fff;
+  /* color: #fff; */
 }
 
-.wrapper {
+/* Job UI */
+.jobui-wrapper {
   text-align: center;
-  width: 15vw;
-  height: 10vh;
-  /*margin-left: 25px;*/
+  width: 65vw;
+  height: 112vh;
 
   position: absolute;
   left: 50%;
@@ -36,7 +36,185 @@ body {
   transform: translate(-50%, 0);
 
   z-index: 999;
-  /*padding: 10px;*/
+}
+
+.jobui-wrapper::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 90%;
+  top: -170px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: -1;
+  background-size: cover;
+  background: url("assets/vintage-paper-bg.jpg") no-repeat fixed center;
+  transform: rotate(180deg);
+}
+
+.close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #d89a2e;
+  font-size: 18px;
+  height: 25px;
+  width: 25px;
+  line-height: 18px;
+  text-align: center;
+  background-color: #111111;
+  border-radius: 50%;
+}
+
+.close:hover {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #d89a2e;
+  font-size: 18px;
+  height: 25px;
+  width: 25px;
+  line-height: 18px;
+  text-align: center;
+  background-color: #701212;
+  border-radius: 50%;
+}
+
+.top-line {
+  width: 58vw;
+  color: #111111 !important;
+  margin-right: 25% !important;
+  margin-left: 4% !important;
+  height: 5px;
+  border-top: 2px solid #000000;
+  border-bottom: 1px solid #000000;
+  opacity: 1;
+}
+
+.bottom-line {
+  width: 58vw;
+  color: #111111 !important;
+  margin-right: 25% !important;
+  margin-left: 4% !important;
+  height: 5px;
+  border-top: 1px solid #000000;
+  border-bottom: 2px solid #000000;
+  opacity: 1;
+}
+
+.title {
+  font-size: 50px;
+  font-weight: bold;
+  margin: auto;
+  color: #000
+}
+
+.row {
+  height: 580px;
+  margin-right: 10px;
+}
+
+.col {
+  padding-top: 30px;
+  padding-bottom: 15px;
+  border-right: 2px solid #111111;
+}
+
+.col:nth-of-type(3n) {
+  border: none;
+}
+
+.card {
+  width: 150px !important;
+  color: #000000;
+  background-color: transparent;
+  border: 0;
+  border-top: 2px solid #111111;
+  border-bottom: 2px solid #111111;
+  border-radius: 0;
+  margin: auto;
+  height: 150px;
+  overflow: hidden;
+}
+
+.card-text {
+  color: #000000;
+  font-weight: normal;
+  font-size: 13px;
+  height: 60px;
+  text-align: justify;
+}
+
+.btn {
+  background: #000000;
+  color: #d89a2e;
+  width: 100px;
+  margin: 0 auto 5px auto;
+  border-radius: 0;
+  padding: 2px 0;
+}
+
+.job-select {
+  bottom: 0;
+  left: 25px;
+  position: absolute;
+}
+
+.btn:hover {
+  background-color: #701212 !important;
+  color: #d89a2e !important;
+}
+
+.job-select:hover {
+  background-color: #701212 !important;
+  color: #d89a2e !important;
+}
+
+.job-active {
+  background-color: #701212;
+  color: #d89a2e !important;
+}
+
+.job-active:hover {
+  background-color: #701212 !important;
+  color: #d89a2e !important;
+}
+
+::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-button {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+
+/* Level Display UI */
+.wrapper {
+  text-align: center;
+  width: 15vw;
+  height: 10vh;
+
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, 0);
+
+  z-index: 999;
+  color: #ffffff;
 }
 
 .wrapper::before {
@@ -53,39 +231,6 @@ body {
   background: rgb(65, 65, 65, 0);
   transform: rotate(180deg);
 }
-
-/* Resolution support 
-@media (max-width: 1920px) {
-  .wrapper {
-    text-align: center;
-    width: 15vw;
-    height: 10vh;
-
-    position: absolute;
-    /*left: 50%;
-    top: 2%;
-    transform: translate(-50%, -2%);
-
-    z-index: 999;
-    /*padding: 10px;
-  }
-
-  .wrapper::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: -70px;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    z-index: -1;
-    /* background-size: cover; 
-    background: rgb(65, 65, 65, 0);
-    transform: rotate(180deg);
-    border-radius: 8px !important;
-  }
-}*/
 
 .ui {
   background: rgb(65, 65, 65, 0.25);

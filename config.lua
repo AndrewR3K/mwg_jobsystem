@@ -2,7 +2,110 @@ Config = {
     --add your language
     defaultlang = "en_lang",
 
+    useJobCenter = true,
+
     jobChangeDelay = 10, -- Time in minutes before the menu is available to swap jobs
+
+    JobCenters = {
+        blackwater = {
+            enabled = true,
+            blip_name = "Blackwater Job Center",
+            create_blip = true,
+            blip_hash = 587827268,
+            blip_style = "BLIP_STYLE_CREATOR_DEFAULT",
+            prompt_name = "blackwater job center",
+            use_hours = false,
+            open_hour = 7, -- 7am
+            close_hour = 21, -- 9pm
+            x = -873.091064453125,
+            y = -1334.35595703125,
+            z = 43.9649658203125
+        },
+        valentine = {
+            enabled = true,
+            blip_name = "Valentine Job Center",
+            create_blip = true,
+            blip_hash = 587827268,
+            blip_style = "BLIP_STYLE_CREATOR_DEFAULT",
+            prompt_name = "valentine job center",
+            use_hours = false,
+            open_hour = 7, -- 7am
+            close_hour = 21, -- 9pm
+            x = -183.3961639404297,
+            y = 630.1585083007813,
+            z = 114.0896987915039
+        },
+        saintdenis = {
+            enabled = true,
+            blip_name = "Saint Denis Job Center",
+            create_blip = true,
+            blip_hash = 587827268,
+            blip_style = "BLIP_STYLE_CREATOR_DEFAULT",
+            prompt_name = "st. denis job center",
+            use_hours = false,
+            open_hour = 7, -- 7am
+            close_hour = 21, -- 9pm
+            x = 2745.8173828125,
+            y = -1395.781494140625,
+            z = 46.18308639526367
+        },
+        rhodes = {
+            enabled = true,
+            blip_name = "Rhodes Job Center",
+            create_blip = true,
+            blip_hash = 587827268,
+            blip_style = "BLIP_STYLE_CREATOR_DEFAULT",
+            prompt_name = "rhodes job center",
+            use_hours = false,
+            open_hour = 7, -- 7am
+            close_hour = 21, -- 9pm
+            x = 1233.4991455078126,
+            y = -1293.5250244140626,
+            z = 76.90349578857422
+        },
+        strawberry = {
+            enabled = true,
+            blip_name = "Strawberry Job Center",
+            create_blip = true,
+            blip_hash = 587827268,
+            blip_style = "BLIP_STYLE_CREATOR_DEFAULT",
+            prompt_name = "strawberry job center",
+            use_hours = false,
+            open_hour = 7, -- 7am
+            close_hour = 21, -- 9pm
+            x = -1817.6444091796876,
+            y = -370.7955627441406,
+            z = 163.29640197753907
+        },
+        annesburg = {
+            enabled = true,
+            blip_name = "Annesburg Job Center",
+            create_blip = true,
+            blip_hash = 587827268,
+            blip_style = "BLIP_STYLE_CREATOR_DEFAULT",
+            prompt_name = "annesburg job center",
+            use_hours = false,
+            open_hour = 7, -- 7am
+            close_hour = 21, -- 9pm
+            x = 2930.232666015625,
+            y = 1279.7947998046876,
+            z = 2930.232666015625
+        },
+        armadillo = {
+            enabled = true,
+            blip_name = "Armadillo Job Center",
+            create_blip = true,
+            blip_hash = 587827268,
+            blip_style = "BLIP_STYLE_CREATOR_DEFAULT",
+            prompt_name = "armadillo job center",
+            use_hours = false,
+            open_hour = 7, -- 7am
+            close_hour = 21, -- 9pm
+            x = -3726.22900390625,
+            y = -2602.784423828125,
+            z = -12.93771266937255
+        }
+    },
 
     Keys = {
         A = 0x7065027D,

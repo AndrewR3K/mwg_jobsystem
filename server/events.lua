@@ -67,15 +67,35 @@ RegisterServerEvent("mwg_jobsystem:jobSelected", function(newjob, newjobid)
         end)
 end)
 
-RegisterServerEvent("mwg_jobsystem:getJobs", function()
+RegisterServerEvent("mwg_jobsystem:quitJob", function(jobid)
+    local _source = source
+    local User = VorpCore.getUser(_source)
+    local Character = User.getUsedCharacter
+
+    exports.oxmysql:query("UPDATE character_jobs SET active=0 WHERE identifier = ? and charid = ? and jobid = ?;"
+        , { Character.identifier, Character.charIdentifier, jobid },
+        function(result)
+            if result.affectedRows > 0 then
+                -- Set Job with VORP (Updates Character.job)
+                TriggerEvent("vorp:setJob", _source, "", 0)
+                -- vorp_crafting support for job locks
+                TriggerClientEvent("vorp:setjob", _source, "")
+                VorpCore.NotifyRightTip(_source, _U("jobremoved"), 5000)
+            end
+        end)
+end)
+
+RegisterServerEvent("mwg_jobsystem:getJobs", function(callback)
     local _source = source
     local User = VorpCore.getUser(_source)
     local Character = User.getUsedCharacter
 
     exports.oxmysql:query("SELECT jobid, level, active from character_jobs WHERE identifier = ? and charid = ?;"
         , { Character.identifier, Character.charIdentifier }, function(result)
-        local jobMenuData = {}
+        local jobData = {}
         local charJobInfo = {}
+        local JobActive = false
+        local level = 0
         if result[1] then
             for _, v in pairs(result) do
                 charJobInfo[tostring(v.jobid)] = {
@@ -90,21 +110,27 @@ RegisterServerEvent("mwg_jobsystem:getJobs", function()
             if charJobInfo[tostring(v.id)] then
                 if charJobInfo[tostring(v.id)].active then
                     menuItemLabel = string.format("%s (Active)", v.name)
+                    JobActive = true
                 else
                     menuItemLabel = string.format("%s (Level: %s)", v.name, charJobInfo[tostring(v.id)].level)
+                    level = charJobInfo[tostring(v.id)].level
+                    JobActive = false
                 end
             else
                 menuItemLabel = v.name
+                JobActive = false
             end
 
-            table.insert(jobMenuData, {
+            table.insert(jobData, {
                 label = menuItemLabel,
                 value = v.id,
                 desc = v.description,
                 job_name = v.name,
+                active = JobActive,
+                level = level
             })
         end
-        TriggerClientEvent("mwg_jobsystem:openJobsMenu", _source, jobMenuData)
+        TriggerClientEvent(callback, _source, jobData)
     end)
 end)
 

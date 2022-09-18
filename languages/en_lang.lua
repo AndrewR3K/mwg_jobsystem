@@ -5,11 +5,16 @@ Locales["en_lang"] = {
     empty           = "You must enter a grade!",
     jobgiven        = "Your job is now: ~o~",
     gradegiven      = "With the grade of: ~o~",
+    jobremoved      = "You are now unemployed!",
     ExpGain         = "XP Gained: ~o~",
     ExpLoss         = "XP Lossed: ~o~",
     LevelUpTitle    = "Congradulations! You are now level ~o~",
     LevelUpSubtitle = "Job: ~o~";
     OnDutyNoMenu    = "You must be off duty to access the job menu!",
     JobChangeDelay  = "Change job in: ~o~",
-    TimeFormat      = " minutes"
+    TimeFormat      = " minutes", -- Lave a space at the begining of this string
+    SubPrompt       = "Press",
+    closed          = "~e~CLOSED ~o~",
+    am              = ":00~q~am to ~o~",
+    pm              = ":00~q~pm"
 }
