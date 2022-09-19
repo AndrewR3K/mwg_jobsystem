@@ -132,21 +132,29 @@ local OnDuty = JobSystem.isOnDuty -- True or False if user is on duty.
 #### Screen Shots
 **Menu + UI:**
 ![Screenshot1](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/UI_Menu.jpg?raw=true)
+
 **UI With XP:**
 ![Screenshot2](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/UI_With_XP.jpg?raw=true)
+
 **Max Level UI:**
 ![Screenshot3](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/MaxLevel.jpg?raw=true)
+
 **Level Up Notification:**
 ![Screenshot4](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/LevelUp.jpg?raw=true)
+
 **New Job Center UI:** Scrollable with hidden scroll bar. Second image shows a little scroll.
 ![Screenshot5](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/JobCenterUI1.jpg?raw=true)
 ![Screenshot6](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/JobCenterUI2.jpg?raw=true)
+
 **On Duty Check:**
 ![Screenshot7](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/OnDutyCheck.jpg?raw=true)
+
 **After Hours:**
 ![Screenshot8](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/JobCenterClosed.jpg?raw=true)
+
 **Job Change Delay:**
 ![Screenshot9](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/JobChangeDelay.jpg?raw=true)
+
 **Blips:**
 ![Screenshot10](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/JobCenterBlips.jpg?raw=true)
 
