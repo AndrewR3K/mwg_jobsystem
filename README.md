@@ -138,13 +138,18 @@ local OnDuty = JobSystem.isOnDuty -- True or False if user is on duty.
 ![Screenshot3](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/MaxLevel.jpg?raw=true)
 **Level Up Notification:**
 ![Screenshot4](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/LevelUp.jpg?raw=true)
-**New Job Center UI:** Scrollable with hidden scroll bar.
-![Screenshot5]()
-![Screenshot6]()
+**New Job Center UI:** Scrollable with hidden scroll bar. Second image shows a little scroll.
+![Screenshot5](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/JobCenterUI1.jpg?raw=true)
+![Screenshot6](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/JobCenterUI2.jpg?raw=true)
 **On Duty Check:**
-![Screenshot7]()
+![Screenshot7](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/OnDutyCheck.jpg?raw=true)
 **After Hours:**
-![Screenshot8]()
+![Screenshot8](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/JobCenterClosed.jpg?raw=true)
+**Job Change Delay:**
+![Screenshot9](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/JobChangeDelay.jpg?raw=true)
+**Blips:**
+![Screenshot10](https://github.com/DavFount/mwg_jobsystem/blob/master/Screenshots/JobCenterBlips.jpg?raw=true)
+
 #### DEPENDENCIES
 - [vorp_core](https://github.com/VORPCORE/vorp-core-lua)
 - [menuapi](https://github.com/outsider31000/menuapi)
