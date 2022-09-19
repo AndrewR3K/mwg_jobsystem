@@ -1,13 +1,7 @@
 CREATE TABLE IF NOT EXISTS jobs (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    description VARCHAR(150) NULL,
-    onDutyEvent VARCHAR(150) NULL,
-    offDutyEvent VARCHAR(150) NULL,
-    expGainEvent VARCHAR(150) NULL,
-    expLossEvent VARCHAR(150) NULL,
-    levelUpEvent VARCHAR(150) NULL,
-    maxLevelEvent VARCHAR(150) NULL
+    description VARCHAR(150) NULL
 );
 
 CREATE TABLE IF NOT EXISTS character_jobs (

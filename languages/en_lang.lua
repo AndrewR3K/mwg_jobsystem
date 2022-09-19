@@ -11,10 +11,12 @@ Locales["en_lang"] = {
     LevelUpTitle    = "Congradulations! You are now level ~o~",
     LevelUpSubtitle = "Job: ~o~";
     OnDutyNoMenu    = "You must be off duty to access the job menu!",
+    onDutyPrompt    = "~e~You're on Duty.",
     JobChangeDelay  = "Change job in: ~o~",
     TimeFormat      = " minutes", -- Lave a space at the begining of this string
     SubPrompt       = "Press",
     closed          = "~e~CLOSED ~o~",
     am              = ":00~q~am to ~o~",
-    pm              = ":00~q~pm"
+    pm              = ":00~q~pm",
+    jobChangeWait   = "~e~You must wait ~o~"
 }

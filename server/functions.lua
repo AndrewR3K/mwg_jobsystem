@@ -99,6 +99,8 @@ function GetCharJobDetails(source, cb)
                 currentLevelMinXp = JobLevels[result[1].level].minxp
             }
             cb(CharJobDetails)
+        else
+            cb(nil)
         end
     end)
 end

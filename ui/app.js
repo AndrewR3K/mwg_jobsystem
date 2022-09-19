@@ -8,7 +8,6 @@ createApp({
       currentXpPercentage: 0,
       jobuiVisible: false,
       visible: false,
-      visPrevValue: false,
       maxLevel: false,
     }
   },
@@ -39,7 +38,6 @@ createApp({
       }
 
       if (event.data.type === 'jobUI') {
-        this.visPrevValue = this.visible
         this.visible = false
         this.jobuiVisible = true
         this.jobs = event.data.jobs
@@ -79,7 +77,6 @@ createApp({
         })
       })
       this.jobuiVisible = false
-      this.visible = this.visPrevValue
       this.jobs = {}
     },
     updateJobBar() {

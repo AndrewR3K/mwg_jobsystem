@@ -76,6 +76,8 @@ RegisterServerEvent("mwg_jobsystem:quitJob", function(jobid)
         , { Character.identifier, Character.charIdentifier, jobid },
         function(result)
             if result.affectedRows > 0 then
+                -- Update Client Info
+                TriggerEvent("mwg_jobsystem:getJobDetails", "mwg_jobsystem:returnClientData", _source)
                 -- Set Job with VORP (Updates Character.job)
                 TriggerEvent("vorp:setJob", _source, "", 0)
                 -- vorp_crafting support for job locks
@@ -146,51 +148,20 @@ RegisterServerEvent("mwg_jobsystem:modifyJobExperience", function(jobid, level, 
         TriggerEvent("mwg_jobsystem:getJobDetails", "mwg_jobsystem:returnClientData", _source)
 
         if newLevel > level then
-            local maxLevelEvent = JobList[tostring(jobid)].maxLevelEvent
-            if JobLevels[newLevel + 1] == nil and maxLevelEvent then
-                TriggerClientEvent(maxLevelEvent, _source)
+            if JobLevels[newLevel + 1] == nil then
+                TriggerClientEvent("mwg_jobsystem:maxLevelEvent", _source)
             end
 
-            local levelUpEvent = JobList[tostring(jobid)].levelUpEvent
-            if levelUpEvent then
-                TriggerClientEvent(levelUpEvent, _source, newLevel)
-            end
-            -- Triggers Notification and UI Update
-            TriggerClientEvent("mwg_jobsystem:levelup", _source, newLevel)
-            -- TriggerEvent("vorp:setjob", _source, Character.job, newLevel)
+            TriggerClientEvent("mwg_jobsystem:levelUpEvent", _source, newLevel)
             UpdateVORPCharacter(Character.identifier, Character.charIdentifier, Character.job, newLevel)
         end
 
         if addxp then
+            TriggerClientEvent("mwg_jobsystem:ExpGainEvent", _source, xp, newTotalXp, newLevel)
             VorpCore.NotifyRightTip(_source, _U("ExpGain") .. xp, 4000)
         else
+            TriggerClientEvent("mwg_jobsystem:ExpLossEvent", _source, xp, newTotalXp, newLevel)
             VorpCore.NotifyRightTip(_source, _U("ExpLoss") .. xploss, 4000)
         end
-
-        local expGainEvent = JobList[tostring(jobid)].expGainEvent
-        if expGainEvent and addxp then
-            TriggerClientEvent(expGainEvent, _source, xp, newTotalXp, newLevel)
-        end
-
-        local expLossEvent = JobList[tostring(jobid)].expLossEvent
-        if expLossEvent and not addxp then
-            TriggerClientEvent(expLossEvent, _source, xp, newTotalXp, xploss, newLevel)
-        end
     end)
-end)
-
-RegisterServerEvent("mwg_jobsystem:onduty", function(jobid)
-    local _source = source
-    local onDutyEvent = JobList[tostring(jobid)].onDutyEvent
-    if onDutyEvent then
-        TriggerClientEvent(onDutyEvent, _source)
-    end
-end)
-
-RegisterServerEvent("mwg_jobsystem:offduty", function(jobid)
-    local _source = source
-    local offDutyEvent = JobList[tostring(jobid)].offDutyEvent
-    if offDutyEvent then
-        TriggerClientEvent(offDutyEvent, _source)
-    end
 end)

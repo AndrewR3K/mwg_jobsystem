@@ -30,12 +30,16 @@ RegisterNetEvent("mwg_jobsystem:setLastJobChange", function()
 end)
 
 RegisterNetEvent("mwg_jobsystem:returnClientData", function(JobData)
-    Job = JobData
-    if not UIShowing then
-        OpenUI(false)
-        UIShowing = true
+    if not JobData then
+        Job = {}
     else
-        OpenUI(true)
+        Job = JobData
+        if not UIShowing then
+            OpenUI(false)
+            UIShowing = true
+        else
+            OpenUI(true)
+        end
     end
 end)
 
@@ -47,34 +51,51 @@ Citizen.CreateThread(function()
             local player = PlayerPedId()
             local isDead = IsPedDeadOrDying(player)
             local hour = GetClockHours()
-            if Config.useJobCenter then
+            if Config.useJobCenters then
                 local coords = GetEntityCoords(player)
                 for jobCenterId, jobCenter in pairs(Config.JobCenters) do
                     if (hour >= jobCenter.close_hour or hour < jobCenter.open_hour) and jobCenter.use_hours then
-                        -- if Config.JobCenters[jobCenterId].blip_handle then
-                        --     RemoveBlip(Config.JobCenters[jobCenterId].blip_handle)
-                        --     Config.JobCenters[jobCenterId].blip_handle = nil
-                        -- end
-                        local distance = GetDistanceBetweenCoords(coords.x, coords.y, coords.z, jobCenter.x, jobCenter.y
+                        if Config.JobCenters[jobCenterId].blip_handle then
+                            RemoveBlip(Config.JobCenters[jobCenterId].blip_handle)
+                            Config.JobCenters[jobCenterId].blip_handle = nil
+                        end
+                        local distance = GetDistanceBetweenCoords(coords.x, coords.y, coords.z, jobCenter.x,
+                            jobCenter.y
                             , jobCenter.z)
                         if distance < 1 then
                             local label_close = CreateVarString(10, 'LITERAL_STRING',
-                                _U("closed") .. jobCenter.open_hour .. _U("am") .. jobCenter.close_hour .. _U("pm"))
+                                _U("closed") ..
+                                jobCenter.open_hour .. _U("am") .. jobCenter.close_hour .. _U("pm"))
                             PromptSetActiveGroupThisFrame(PromptGroup2, label_close)
                         end
                     elseif hour >= jobCenter.open_hour or not jobCenter.use_hours then
-                        local distance = GetDistanceBetweenCoords(coords.x, coords.y, coords.z, jobCenter.x, jobCenter.y
+                        local distance = GetDistanceBetweenCoords(coords.x, coords.y, coords.z, jobCenter.x,
+                            jobCenter.y
                             , jobCenter.z)
-                        -- if not Config.JobCenters[jobCenterId].blip_handle and jobCenter.create_blip then
-                        --     AddBlip(jobCenterId)
-                        -- end
+                        if not Config.JobCenters[jobCenterId].blip_handle and jobCenter.create_blip then
+                            AddBlip(jobCenterId)
+                        end
                         if distance < 1 then
-                            local label_open = CreateVarString(10, 'LITERAL_STRING', jobCenter.prompt_name)
-                            PromptSetActiveGroupThisFrame(PromptGroup, label_open)
-                            if Citizen.InvokeNative(0xC92AC953F0A982AE, OpenJobCenter) then
-                                CloseUI()
-                                UIShowing = false
-                                TriggerServerEvent("mwg_jobsystem:getJobs", "jobsystem:openJobUI")
+                            if not OnDuty then
+                                local timeSinceJobChange = math.floor(((GetGameTimer() - lastJobChange) / 1000) / 60) -- Calculate time since last job change in minutes
+                                if timeSinceJobChange >= Config.jobChangeDelay or lastJobChange == 0 then
+                                    local label_open = CreateVarString(10, 'LITERAL_STRING', jobCenter.prompt_name)
+                                    PromptSetActiveGroupThisFrame(PromptGroup, label_open)
+                                    if Citizen.InvokeNative(0xC92AC953F0A982AE, OpenJobCenter) then
+                                        CloseUI()
+                                        UIShowing = false
+                                        TriggerServerEvent("mwg_jobsystem:getJobs", "jobsystem:openJobUI")
+                                    end
+                                else
+                                    local nextJobChange = Config.jobChangeDelay - timeSinceJobChange
+                                    local label_job_change_delay = CreateVarString(10, 'LITERAL_STRING',
+                                        _U("jobChangeWait") .. nextJobChange .. _U("TimeFormat"))
+                                    PromptSetActiveGroupThisFrame(PromptGroup2, label_job_change_delay)
+                                end
+                            else
+                                local label_job_change_on_duty = CreateVarString(10, 'LITERAL_STRING',
+                                    _U("onDutyPrompt"))
+                                PromptSetActiveGroupThisFrame(PromptGroup2, label_job_change_on_duty)
                             end
                         end
                     end
@@ -138,7 +159,7 @@ RegisterNetEvent("jobsystem:openJobUI", function(jobs)
     SetNuiFocus(true, true)
 end)
 
-RegisterNetEvent("mwg_jobsystem:levelup", function(level)
+RegisterNetEvent("mwg_jobsystem:levelUpEvent", function(level)
     CloseUI()
     VORPcore.NotifySimpleTop(_U("LevelUpTitle") .. level, _U("LevelUpSubtitle") .. Job.jobName, 4000)
 
@@ -148,21 +169,29 @@ RegisterNetEvent("mwg_jobsystem:levelup", function(level)
 end)
 
 AddEventHandler("mwg_jobsystem:addxp", function(xp)
-    TriggerServerEvent("mwg_jobsystem:modifyJobExperience", Job.jobID, Job.level, Job.totalXp, xp, true)
+    if next(Job) ~= nil then
+        TriggerServerEvent("mwg_jobsystem:modifyJobExperience", Job.jobID, Job.level, Job.totalXp, xp, true)
+    end
 end)
 
 AddEventHandler("mwg_jobsystem:remxp", function(xp)
-    TriggerServerEvent("mwg_jobsystem:modifyJobExperience", Job.jobID, Job.level, Job.totalXp, xp, false)
+    if next(Job) ~= nil then
+        TriggerServerEvent("mwg_jobsystem:modifyJobExperience", Job.jobID, Job.level, Job.totalXp, xp, false)
+    end
 end)
 
 RegisterCommand("onduty", function(source, args, rawCommand)
-    OnDuty = true
-    TriggerServerEvent("mwg_jobsystem:onduty", Job.jobID)
+    if next(Job) ~= nil then
+        OnDuty = true
+        TriggerServerEvent("mwg_jobsystem:onDutyEvent", Job.jobName)
+    end
 end)
 
 RegisterCommand("offduty", function(source, args, rawCommand)
-    OnDuty = false
-    TriggerServerEvent("mwg_jobsystem:offduty", Job.jobID)
+    if next(Job) ~= nil then
+        OnDuty = false
+        TriggerEvent("mwg_jobsystem:offDutyEvent", Job.jobName)
+    end
 end)
 
 function CloseUI()
@@ -219,17 +248,16 @@ end
 
 function AddBlip(JobCenter)
     if Config.JobCenters[JobCenter].create_blip then
-        local blip_style = GetHashKey(Config.JobCenters[JobCenter].blip_style)
-        -- Create Blip with Sytle Hash
-        Config.JobCenters[JobCenter].BlipHandle = Citizen.InvokeNative(0x554D9D53F696D002, blip_style,
+        --Create Blip
+        Config.JobCenters[JobCenter].blip_handle = Citizen.InvokeNative(0x554D9D53F696D002, 1664425300,
             Config.JobCenters[JobCenter].x, Config.JobCenters[JobCenter].y, Config.JobCenters[JobCenter].z)
         -- Set Sprite
-        Citizen.InvokeNative(0x74F74D3207ED525C, Config.JobCenters[JobCenter].BlipHandle,
+        Citizen.InvokeNative(0x74F74D3207ED525C, Config.JobCenters[JobCenter].blip_handle,
             Config.JobCenters[JobCenter].blip_hash, true)
         -- Set Sprite Scale
-        Citizen.InvokeNative(0xD38744167B2FA257, Config.JobCenters[JobCenter].BlipHandle, 0.2)
+        Citizen.InvokeNative(0xD38744167B2FA257, Config.JobCenters[JobCenter].blip_handle, 0.2)
         -- Set Blip Name
-        Citizen.InvokeNative(0x9CB1A1623062F402, Config.JobCenters[JobCenter].BlipHandle,
+        Citizen.InvokeNative(0x9CB1A1623062F402, Config.JobCenters[JobCenter].blip_handle,
             Config.JobCenters[JobCenter].blip_name)
     end
 end
@@ -254,7 +282,7 @@ end)
 
 RegisterNUICallback('jobUIClose', function(args, cb)
     if args.action == "close" then
-        SetNuiFocus(false, false)
+        TriggerServerEvent("mwg_jobsystem:getJobDetails", "mwg_jobsystem:returnClientData")
     elseif args.action == "setJob" then
         local job = args.job
         TriggerServerEvent("mwg_jobsystem:jobSelected", job.job_name, job.value)
