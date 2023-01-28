@@ -2,11 +2,13 @@ AddEventHandler('getMWGJobSystem', function(cb)
     local jobsystemData = {}
 
     jobsystemData.registerJob = function(name, desc)
-        if name == nil or desc == nil then return nil end
+        CreateThread(function()
+            if name == nil or desc == nil then return nil end
 
-        exports.oxmysql:query("SELECT `id` FROM `jobs` WHERE `name`=? LIMIT 1;", { name }, function(result)
+            local result = MySQL.query.await("SELECT `id` FROM `js_jobs` WHERE `name`=? LIMIT 1;", { name })
+
             if result[1] == nil then
-                exports.oxmysql:query("INSERT INTO `jobs` (`name`,`description`) VALUES (?, ?);"
+                exports.oxmysql:query("INSERT INTO `js_jobs` (`name`,`description`) VALUES (?, ?);"
                     , { name, desc }, function(result)
                     JobInfo = {
                         id = result.insertId,
