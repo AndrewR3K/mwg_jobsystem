@@ -2,6 +2,8 @@ Config = {
     --add your language
     defaultlang = "en_lang",
 
+    enableHUD = true,
+
     useJobCenters = true,
 
     jobChangeDelay = 10, -- Time in minutes before the menu is available to swap jobs

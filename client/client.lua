@@ -202,19 +202,21 @@ function CloseUI()
 end
 
 function OpenUI(UpdateOnly)
-    if UpdateOnly then
-        SendNUIMessage({
-            type = 'update',
-            jobData = Job
-        })
-    else
-        SendNUIMessage({
-            type = 'open',
-            jobData = Job
-        })
-    end
+    if (Config.enableHUD) then
+        if UpdateOnly then
+            SendNUIMessage({
+                type = 'update',
+                jobData = Job
+            })
+        else
+            SendNUIMessage({
+                type = 'open',
+                jobData = Job
+            })
+        end
 
-    SetNuiFocus(false, false)
+        SetNuiFocus(false, false)
+    end
 end
 
 function PromptSetUp()
